@@ -27,8 +27,6 @@ public class PostInput {
 
     private MultipartFile image;
 
-    @NotNull(message = "user_id cant be null")
-    private Long user_id;
 
     @NotNull(message = "categories cant be null")
     private Set<Long> categories = new HashSet<>();
@@ -36,11 +34,10 @@ public class PostInput {
     public PostInput() {
     }
 
-    public PostInput(String title, String description, MultipartFile image, Long user_id, Set<Long> categories) {
+    public PostInput(String title, String description, MultipartFile image, Set<Long> categories) {
         this.title = title;
         this.description = description;
         this.image = image;
-        this.user_id = user_id;
         this.categories = categories;
     }
 
@@ -68,14 +65,6 @@ public class PostInput {
         this.image = image;
     }
 
-    public Long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
-    }
-
     public void setCategories(Set<Long> categories) {
         this.categories = categories;
     }
@@ -90,7 +79,6 @@ public class PostInput {
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", image=" + image +
-                ", user_id=" + user_id +
                 '}';
     }
 

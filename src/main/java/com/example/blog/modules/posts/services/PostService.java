@@ -8,9 +8,13 @@ import com.example.blog.modules.posts.models.dto.PostOutput;
 import com.example.blog.modules.posts.repository.CategoryRepository;
 import com.example.blog.modules.posts.repository.PostRepository;
 import com.example.blog.modules.users.exceptions.UserNotFoundException;
+import com.example.blog.modules.users.models.Roles;
 import com.example.blog.modules.users.models.User;
 import com.example.blog.modules.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
@@ -45,10 +49,10 @@ public class PostService {
         }).collect(Collectors.toList());
     }
 
-    public PostOutput createPost(PostInput postInput) throws IOException, UserNotFoundException {
-        User postUser = userRepository.getUserById(postInput.getUser_id());
+    public PostOutput createPost(PostInput postInput, String email) throws IOException, UserNotFoundException {
+        User postUser = userRepository.getUserByEmail(email);
         if (postUser == null) {
-            throw new UserNotFoundException("User With Id : " + postInput.getUser_id() + " Not Found");
+            throw new UserNotFoundException("User Not Found");
         }
         Set<Category> categories = categoryRepository.getCategoriesByIdIn(postInput.getCategories());
         Post post = postInput.toPost();
@@ -71,15 +75,18 @@ public class PostService {
         return post;
     }
 
-    public PostOutput updatePost(Long id, PostInput postUpdateInput) throws
+    public boolean userCanDeletePost(Authentication authentication, Post post) {
+        String email = authentication.getName();
+        return authentication.getAuthorities().contains(new SimpleGrantedAuthority(Roles.Admin.name())) ||
+                email.equals(post.getUser().getEmail());
+    }
+
+    public PostOutput updatePost(Long id, PostInput postUpdateInput, String email) throws
             PostNotFoundException, IOException, UserNotFoundException {
-        Post post = postRepository.getPostById(id);
-        if (post == null) {
-            throw new PostNotFoundException("Post With Id : " + id + " Not Found");
-        }
-        User postUser = userRepository.getUserById(postUpdateInput.getUser_id());
+        Post post = getPostById(id);
+        User postUser = userRepository.getUserByEmail(email);
         if (postUser == null) {
-            throw new UserNotFoundException("User With Id : " + postUpdateInput.getUser_id() + " Not Found");
+            throw new UserNotFoundException("User Not Found");
         }
         Post newPostInfo = postUpdateInput.toPost();
         post.setUser(postUser);
