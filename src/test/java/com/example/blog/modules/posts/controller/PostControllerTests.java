@@ -140,21 +140,20 @@ public class PostControllerTests {
     @WithMockUser
     @Test
     public void updatePostWithAuthenticatedUserSuccess() throws Exception {
-        Mockito.when(postService.updatePost(Mockito.anyLong(),Mockito.any(PostInput.class),Mockito.anyString())).thenReturn(new PostOutput());
+        Mockito.when(postService.updatePost(Mockito.anyLong(), Mockito.any(PostInput.class), Mockito.anyString())).thenReturn(new PostOutput());
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/posts/update/5")
-                .param("title","fake title")
-                .param("description","fake description")
-                ;
+                .param("title", "fake title")
+                .param("description", "fake description");
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
+
     @WithMockUser
     @Test
     public void updatePostWithInvalidDataFails() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/posts/update/5")
-                .param("title","fake title")
-                .param("description","fake desc")
-                ;
+                .param("title", "fake title")
+                .param("description", "fake desc");
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }

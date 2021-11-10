@@ -1,20 +1,16 @@
 package com.example.blog.modules.posts.controller;
 
-import com.example.blog.configs.security.CustomUserDetails;
 import com.example.blog.modules.posts.exceptions.PostNotFoundException;
 import com.example.blog.modules.posts.models.Post;
 import com.example.blog.modules.posts.models.dto.PostInput;
 import com.example.blog.modules.posts.models.dto.PostOutput;
 import com.example.blog.modules.posts.services.PostService;
 import com.example.blog.modules.users.exceptions.UserNotFoundException;
-import com.example.blog.modules.users.models.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
